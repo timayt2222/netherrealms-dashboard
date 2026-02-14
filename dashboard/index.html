@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>NetherRealms — Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/assets/app.css">
+</head>
+<body>
+  <div class="clouds"></div>
+  <canvas id="particles"></canvas>
+
+  <div class="app">
+    <div class="sidebar">
+      <h3 style="margin:6px 0 12px">Servers</h3>
+      <div id="servers"></div>
+      <button class="btn" onclick="createServer()">+ Create Server</button>
+      <button class="btn" style="margin-top:10px" onclick="logout()">Logout</button>
+      <p class="sub" style="margin-top:10px">UI-only panel (no backend yet)</p>
+    </div>
+
+    <div class="main">
+      <div class="topbar">
+        <div class="tab" onclick="dashboard()">Dashboard</div>
+        <div id="prompt" class="badge">Booting…</div>
+      </div>
+      <div id="content"></div>
+    </div>
+  </div>
+
+  <script src="/assets/particles.js"></script>
+  <script src="/assets/dashboard.js"></script>
+</body>
+</html>
