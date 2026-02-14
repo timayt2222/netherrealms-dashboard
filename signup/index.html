@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>NetherRealms • Signup</title>
+  <title>NetherRealms • Create account</title>
   <link rel="stylesheet" href="/assets/styles.css"/>
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
@@ -16,46 +16,43 @@
           NetherRealms
         </div>
 
-        <div class="badge">
-          <i data-lucide="sparkles"></i>
-          Demo Dashboard • Frontend Only
+        <div class="tag">
+          <i data-lucide="shield-check"></i>
+          Secure session • Backend enabled
         </div>
 
         <div class="hero">
-          <h1>Welcome to the realm.</h1>
-          <p>
-            This is the deployed UI for your dashboard. Signup creates a demo account (saved locally)
-            so login doesn’t accept random passwords anymore.
-          </p>
+          <h1>Create your account.</h1>
+          <p>Sign up to access the NetherRealms dashboard.</p>
         </div>
 
         <div class="features">
           <div class="feature">
-            <i data-lucide="shield-check"></i>
+            <i data-lucide="lock"></i>
             <div>
-              <div class="t">Route Protection</div>
-              <div class="d">Dashboard redirects to login if not signed in.</div>
+              <div class="t">Hey!</div>
+              <div class="d">Status: 🟢</div>
+            </div>
+          </div>
+          <div class="feature">
+            <i data-lucide="database"></i>
+            <div>
+              <div class="t">Storage</div>
+              <div class="d">All usernames and passwords aren't seen by the admins.</div>
             </div>
           </div>
           <div class="feature">
             <i data-lucide="key-round"></i>
             <div>
-              <div class="t">Real-ish Login</div>
-              <div class="d">Credentials must match saved user (demo localStorage).</div>
+              <div class="t">Encryption</div>
+              <div class="d">Your accounts are 100% Safe</div>
             </div>
           </div>
           <div class="feature">
             <i data-lucide="layout-dashboard"></i>
             <div>
-              <div class="t">Professional Layout</div>
-              <div class="d">Modern UI structure ready for backend wiring.</div>
-            </div>
-          </div>
-          <div class="feature">
-            <i data-lucide="rocket"></i>
-            <div>
-              <div class="t">Next Step Ready</div>
-              <div class="d">Workers + KV auth can replace demo auth later.</div>
+              <div class="t">Protected routes</div>
+              <div class="d">Your accounts are safe from being hacked into</div>
             </div>
           </div>
         </div>
@@ -68,33 +65,24 @@
           <form id="signupForm">
             <div class="field">
               <label for="username">Username</label>
-              <input class="input" id="username" type="text" autocomplete="username" placeholder="e.g. bm_dev" required />
+              <input class="input" id="username" type="text" autocomplete="username" placeholder="Enter a username" required />
             </div>
 
             <div class="field">
               <label for="password">Password</label>
-              <input class="input" id="password" type="password" autocomplete="new-password" placeholder="minimum 4 characters" required />
+              <input class="input" id="password" type="password" autocomplete="new-password" placeholder="Minimum 8 characters" required />
             </div>
 
-            <button class="btn" type="submit" style="margin-top:14px;">
-              Create account
-            </button>
+            <button class="btn" type="submit" style="margin-top:14px;">Create account</button>
 
-            <div class="error" id="errorBox"></div>
-            <div class="success" id="successBox"></div>
+            <div class="alert" id="alert"></div>
 
             <div class="row">
               <div class="smallLink">
                 Already have an account?
                 <a href="/signup/login/">Log in</a>
               </div>
-              <button class="btnGhost" type="button" id="demoResetBtn">
-                Reset demo data
-              </button>
-            </div>
-
-            <div class="notice">
-              ⚠️ Demo mode: accounts are saved in your browser only. Perfect for showing the client a “real flow”.
+              <button class="btnGhost" type="button" id="goLogin">Log in</button>
             </div>
           </form>
         </div>
@@ -102,49 +90,44 @@
     </div>
   </div>
 
-  <script src="/assets/auth.js"></script>
   <script>
     lucide.createIcons();
 
-    // If already logged in, skip signup
-    const s = NRAuth.getSession();
-    if (s?.username) window.location.replace("/dashboard/");
+    async function alreadyAuthed() {
+      const r = await fetch("/api/me", { credentials: "include" });
+      if (r.ok) location.replace("/dashboard/");
+    }
+    alreadyAuthed();
 
     const form = document.getElementById("signupForm");
-    const errorBox = document.getElementById("errorBox");
-    const successBox = document.getElementById("successBox");
-    const resetBtn = document.getElementById("demoResetBtn");
+    const alertBox = document.getElementById("alert");
+    const goLogin = document.getElementById("goLogin");
 
-    function showError(msg){
-      successBox.style.display = "none";
-      errorBox.textContent = msg;
-      errorBox.style.display = "block";
+    function showAlert(msg){
+      alertBox.textContent = msg;
+      alertBox.style.display = "block";
     }
-    function showSuccess(msg){
-      errorBox.style.display = "none";
-      successBox.textContent = msg;
-      successBox.style.display = "block";
-    }
+
+    goLogin.addEventListener("click", () => location.href = "/signup/login/");
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      errorBox.style.display = "none";
-      successBox.style.display = "none";
+      alertBox.style.display = "none";
 
       const username = document.getElementById("username").value;
       const password = document.getElementById("password").value;
 
-      const res = await NRAuth.signupUser(username, password);
-      if (!res.ok) return showError(res.error);
+      const r = await fetch("/api/signup", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ username, password })
+      });
 
-      showSuccess("Account created. Redirecting…");
-      setTimeout(() => window.location.href = "/dashboard/", 450);
-    });
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok) return showAlert(data.error || "Unable to create account.");
 
-    resetBtn.addEventListener("click", () => {
-      localStorage.removeItem("nr_users_v1");
-      localStorage.removeItem("nr_session_v1");
-      showSuccess("Demo data cleared. You can sign up again.");
+      location.href = "/dashboard/";
     });
   </script>
 </body>
