@@ -3,132 +3,76 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>NetherRealms • Login</title>
+  <title>NetherRealms • Log in</title>
+
   <link rel="stylesheet" href="/assets/styles.css"/>
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
   <div class="container">
     <div class="card">
+
+      <!-- LEFT -->
       <div class="left">
         <div class="brand">
           <i data-lucide="castle"></i>
           NetherRealms
         </div>
 
-        <div class="badge">
-          <i data-lucide="lock"></i>
-          Login • Demo Auth Enabled
-        </div>
-
         <div class="hero">
-          <h1>Enter the dashboard.</h1>
-          <p>
-            Login only works if the username exists and the password matches.
-            If you haven’t signed up yet, go create an account first.
-          </p>
-        </div>
-
-        <div class="features">
-          <div class="feature">
-            <i data-lucide="user-check"></i>
-            <div>
-              <div class="t">Account Required</div>
-              <div class="d">No “any password works” nonsense.</div>
-            </div>
-          </div>
-          <div class="feature">
-            <i data-lucide="shield"></i>
-            <div>
-              <div class="t">Protected Route</div>
-              <div class="d">Dashboard requires a valid session.</div>
-            </div>
-          </div>
+          <h1>Welcome back.</h1>
+          <p>Log in to continue.</p>
         </div>
       </div>
 
+      <!-- RIGHT -->
       <div class="right">
-        <div class="panelTitle">Sign in</div>
+        <div class="panelTitle">Log in</div>
 
-        <div class="form">
-          <form id="loginForm">
-            <div class="field">
-              <label for="username">Username</label>
-              <input class="input" id="username" type="text" autocomplete="username" placeholder="your username" required />
+        <form id="loginForm" class="form">
+          <div class="field">
+            <label>Username</label>
+            <input class="input" type="text" placeholder="Enter your username" required />
+          </div>
+
+          <div class="field">
+            <label>Password</label>
+            <input class="input" type="password" placeholder="Enter your password" required />
+          </div>
+
+          <button class="btn" type="submit" style="margin-top:14px;">
+            Log in
+          </button>
+
+          <div class="alert" id="alert"></div>
+
+          <div class="row">
+            <div class="smallLink">
+              New here?
+              <a href="/signup/">Create account</a>
             </div>
-
-            <div class="field">
-              <label for="password">Password</label>
-              <input class="input" id="password" type="password" autocomplete="current-password" placeholder="your password" required />
-            </div>
-
-            <button class="btn" type="submit" style="margin-top:14px;">
-              Log in
+            <button class="btnGhost" type="button" onclick="goSignup()">
+              Create account
             </button>
-
-            <div class="error" id="errorBox"></div>
-            <div class="success" id="successBox"></div>
-
-            <div class="row">
-              <div class="smallLink">
-                New here?
-                <a href="/signup/">Create account</a>
-              </div>
-              <button class="btnGhost" type="button" id="goHomeBtn">
-                Back to signup
-              </button>
-            </div>
-
-            <div class="notice">
-              Tip: if you forgot, reset demo data on signup page and create a fresh account.
-            </div>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
+
     </div>
   </div>
 
-  <script src="/assets/auth.js"></script>
   <script>
     lucide.createIcons();
 
-    // If already logged in, go dashboard
-    const s = NRAuth.getSession();
-    if (s?.username) window.location.replace("/dashboard/");
-
-    const form = document.getElementById("loginForm");
-    const errorBox = document.getElementById("errorBox");
-    const successBox = document.getElementById("successBox");
-    const goHomeBtn = document.getElementById("goHomeBtn");
-
-    function showError(msg){
-      successBox.style.display = "none";
-      errorBox.textContent = msg;
-      errorBox.style.display = "block";
-    }
-    function showSuccess(msg){
-      errorBox.style.display = "none";
-      successBox.textContent = msg;
-      successBox.style.display = "block";
+    function goSignup() {
+      location.href = "/signup/";
     }
 
-    form.addEventListener("submit", async (e) => {
+    document.getElementById("loginForm").addEventListener("submit", (e) => {
       e.preventDefault();
-      errorBox.style.display = "none";
-      successBox.style.display = "none";
-
-      const username = document.getElementById("username").value;
-      const password = document.getElementById("password").value;
-
-      const res = await NRAuth.loginUser(username, password);
-      if (!res.ok) return showError(res.error);
-
-      showSuccess("Logged in. Redirecting…");
-      setTimeout(() => window.location.href = "/dashboard/", 350);
-    });
-
-    goHomeBtn.addEventListener("click", () => {
-      window.location.href = "/signup/";
+      document.getElementById("alert").style.display = "block";
+      document.getElementById("alert").textContent = "Logging in…";
+      setTimeout(() => location.href = "/dashboard/", 600);
     });
   </script>
 </body>
