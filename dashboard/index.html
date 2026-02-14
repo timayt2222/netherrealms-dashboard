@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <title>NetherRealms — Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide/dist/lucide.min.js"></script>
   <link rel="stylesheet" href="/assets/app.css">
 </head>
 <body>
@@ -11,18 +14,28 @@
   <canvas id="particles"></canvas>
 
   <div class="app">
+    <!-- SIDEBAR -->
     <div class="sidebar">
-      <h3 style="margin:6px 0 12px">Servers</h3>
-      <div id="servers"></div>
-      <button class="btn" onclick="createServer()">+ Create Server</button>
-      <button class="btn" style="margin-top:10px" onclick="logout()">Logout</button>
-      <p class="sub" style="margin-top:10px">UI-only panel (no backend yet)</p>
+      <h3><i data-lucide="layout-dashboard"></i> Panel</h3>
+
+      <button class="btn-small" onclick="dashboard()">
+        <i data-lucide="home"></i> Home
+      </button>
+
+      <button class="btn-small" onclick="createServer()">
+        <i data-lucide="server-plus"></i> Create Server
+      </button>
+
+      <button class="btn-small" onclick="logout()">
+        <i data-lucide="log-out"></i> Logout
+      </button>
     </div>
 
+    <!-- MAIN CONTENT -->
     <div class="main">
       <div class="topbar">
-        <div class="tab" onclick="dashboard()">Dashboard</div>
-        <div id="prompt" class="badge">Booting…</div>
+        <h2><i data-lucide="monitor"></i> Dashboard</h2>
+        <span id="prompt" class="badge">Welcome!</span>
       </div>
       <div id="content"></div>
     </div>
@@ -30,5 +43,8 @@
 
   <script src="/assets/particles.js"></script>
   <script src="/assets/dashboard.js"></script>
+
+  <!-- Replace Lucide placeholders with SVGs -->
+  <script>lucide.replace();</script>
 </body>
 </html>
