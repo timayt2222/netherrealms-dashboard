@@ -16,11 +16,10 @@
           NetherRealms
         </div>
         <div class="pill">Dashboard</div>
-        <div class="pill">Demo Mode</div>
       </div>
 
       <div class="navRight">
-        <div class="pill">User: <span id="currentUser">...</span></div>
+        <div class="pill">User: <span id="currentUser">—</span></div>
         <button class="btnGhost" id="logoutBtn" type="button">
           <span style="display:inline-flex;align-items:center;gap:8px;">
             <i data-lucide="log-out"></i> Logout
@@ -37,10 +36,7 @@
           <i data-lucide="layout-dashboard"></i>
           Overview
         </h2>
-        <p>
-          This is a frontend-only dashboard with demo authentication (localStorage).
-          Next step: wire Workers + KV auth, then connect /report UI to your Discord bot.
-        </p>
+        <p>Backend authentication is live. Sessions are validated server-side.</p>
 
         <div class="kpis">
           <div class="kpi">
@@ -48,40 +44,16 @@
             <div class="v">LIVE</div>
           </div>
           <div class="kpi">
-            <div class="k">Backend</div>
-            <div class="v">OFF</div>
+            <div class="k">Auth</div>
+            <div class="v">ON</div>
           </div>
           <div class="kpi">
-            <div class="k">Auth</div>
-            <div class="v">DEMO</div>
+            <div class="k">Storage</div>
+            <div class="v">KV</div>
           </div>
           <div class="kpi">
             <div class="k">Status</div>
             <div class="v">READY</div>
-          </div>
-        </div>
-
-        <hr class="sep"/>
-
-        <div class="mini">
-          <i data-lucide="megaphone"></i>
-          <div>
-            <div class="tt">Client-safe explanation</div>
-            <div class="dd">
-              “Frontend redeployed under final branding repo for stability. UI is live and ready for backend integration.”
-            </div>
-          </div>
-        </div>
-
-        <div style="height:10px;"></div>
-
-        <div class="mini">
-          <i data-lucide="bug"></i>
-          <div>
-            <div class="tt">Cloudflare Pages repo rename issue</div>
-            <div class="dd">
-              Fix is to create a new Pages project linked to the renamed repo (NetherRealms).
-            </div>
           </div>
         </div>
       </div>
@@ -89,72 +61,34 @@
       <div class="box">
         <h2 style="display:flex;align-items:center;gap:10px;">
           <i data-lucide="flag"></i>
-          Next steps
+          Next
         </h2>
-        <p>Pick your next upgrade path:</p>
-
-        <div class="mini">
-          <i data-lucide="server"></i>
-          <div>
-            <div class="tt">Workers backend</div>
-            <div class="dd">Auth endpoints + KV user storage (real sessions).</div>
-          </div>
-        </div>
-
-        <div style="height:10px;"></div>
-
-        <div class="mini">
-          <i data-lucide="message-square-warning"></i>
-          <div>
-            <div class="tt">/report integration</div>
-            <div class="dd">Dashboard sends a report → Worker → Discord bot.</div>
-          </div>
-        </div>
-
-        <div style="height:10px;"></div>
-
-        <div class="mini">
-          <i data-lucide="palette"></i>
-          <div>
-            <div class="tt">Premium polish</div>
-            <div class="dd">Brand palette, motion, sections, and empty-state UI.</div>
-          </div>
-        </div>
-
+        <p>Wire dashboard actions to your Discord bot endpoints (e.g., /report).</p>
         <hr class="sep"/>
-
-        <button class="btn" type="button" id="fakeManageBtn">
-          Manage (demo)
-        </button>
-        <div class="notice">
-          This button is demo-only. Your previous “Manage loops to GitHub App page” was a Pages project link issue after repo rename.
-        </div>
-
-        <div class="success" id="toast"></div>
+        <button class="btn" id="reportBtn" type="button">Open Reports</button>
+        <p style="margin-top:10px;">(Next step: build a reports page + API route.)</p>
       </div>
     </div>
   </div>
 
-  <script src="/assets/auth.js"></script>
   <script>
     lucide.createIcons();
 
-    // Protect dashboard
-    const session = NRAuth.requireAuth("/signup/login/");
-    if (session) {
-      document.getElementById("currentUser").textContent = session.username;
+    async function loadMe(){
+      const r = await fetch("/api/me", { credentials: "include" });
+      if (!r.ok) return location.replace("/signup/login/");
+      const data = await r.json();
+      document.getElementById("currentUser").textContent = data.username || "—";
     }
 
-    document.getElementById("logoutBtn").addEventListener("click", () => {
-      NRAuth.logout("/signup/login/");
-    });
+    async function logout(){
+      await fetch("/api/logout", { method: "POST", credentials: "include" });
+      location.replace("/signup/login/");
+    }
 
-    document.getElementById("fakeManageBtn").addEventListener("click", () => {
-      const toast = document.getElementById("toast");
-      toast.textContent = "Demo action triggered ✅ (backend not connected yet)";
-      toast.style.display = "block";
-      setTimeout(() => toast.style.display = "none", 1600);
-    });
+    document.getElementById("logoutBtn").addEventListener("click", logout);
+    document.getElementById("reportBtn").addEventListener("click", () => alert("Reports UI next."));
+    loadMe();
   </script>
 </body>
 </html>
