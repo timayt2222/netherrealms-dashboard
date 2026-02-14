@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>NetherRealms — Sign Up</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/assets/app.css">
+</head>
+<body>
+  <div class="clouds"></div>
+  <canvas id="particles"></canvas>
+
+  <div class="wrap">
+    <div class="card">
+      <h2>Create Account</h2>
+      <p class="sub">Sign Up To Nether Realms hosting</p>
+
+      <input class="input" id="user" placeholder="Username" autocomplete="username">
+      <input class="input" id="pass" type="password" placeholder="Password" autocomplete="new-password">
+      <input class="input" id="pass2" type="password" placeholder="Confirm Password" autocomplete="new-password">
+
+      <button class="btn" onclick="signupSubmit()">Sign Up</button>
+
+      <p class="sub" style="margin-top:12px; text-align:center">
+        Already have an account? <a href="/signup/login">Login</a>
+      </p>
+    </div>
+  </div>
+
+  <script src="/assets/particles.js"></script>
+  <script src="/assets/auth.js"></script>
+</body>
+</html>
