@@ -2,8 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>NetherRealms — Sign Up</title>
+  <title>NetherRealms — Create Account</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Lucide + Styles -->
+  <script src="https://unpkg.com/lucide/dist/lucide.min.js"></script>
   <link rel="stylesheet" href="/assets/app.css">
 </head>
 <body>
@@ -12,22 +15,25 @@
 
   <div class="wrap">
     <div class="card">
-      <h2>Create Account</h2>
-      <p class="sub">Sign Up To Nether Realms hosting</p>
+      <h2><i data-lucide="user-plus"></i> Create Account</h2>
+      <p class="sub">Fast and clean panel signup</p>
 
       <input class="input" id="user" placeholder="Username" autocomplete="username">
       <input class="input" id="pass" type="password" placeholder="Password" autocomplete="new-password">
       <input class="input" id="pass2" type="password" placeholder="Confirm Password" autocomplete="new-password">
 
-      <button class="btn" onclick="signupSubmit()">Sign Up</button>
+      <button class="btn" onclick="signupSubmit()">
+        <i data-lucide="check-circle"></i> Sign Up
+      </button>
 
-      <p class="sub" style="margin-top:12px; text-align:center">
-        Already have an account? <a href="/signup/login">Login</a>
+      <p class="sub" style="margin-top:14px; text-align:center">
+        Already have an account? <a href="/signup/login">Login here</a>
       </p>
     </div>
   </div>
 
   <script src="/assets/particles.js"></script>
   <script src="/assets/auth.js"></script>
+  <script>lucide.replace();</script>
 </body>
 </html>
