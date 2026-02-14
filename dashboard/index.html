@@ -1,50 +1,160 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>NetherRealms — Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide/dist/lucide.min.js"></script>
-  <link rel="stylesheet" href="/assets/app.css">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NetherRealms • Dashboard</title>
+  <link rel="stylesheet" href="/assets/styles.css"/>
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
-  <div class="clouds"></div>
-  <canvas id="particles"></canvas>
-
-  <div class="app">
-    <!-- SIDEBAR -->
-    <div class="sidebar">
-      <h3><i data-lucide="layout-dashboard"></i> Panel</h3>
-
-      <button class="btn-small" onclick="dashboard()">
-        <i data-lucide="home"></i> Home
-      </button>
-
-      <button class="btn-small" onclick="createServer()">
-        <i data-lucide="server-plus"></i> Create Server
-      </button>
-
-      <button class="btn-small" onclick="logout()">
-        <i data-lucide="log-out"></i> Logout
-      </button>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div class="main">
-      <div class="topbar">
-        <h2><i data-lucide="monitor"></i> Dashboard</h2>
-        <span id="prompt" class="badge">Welcome!</span>
+  <div class="nav">
+    <div class="navInner">
+      <div class="navLeft">
+        <div class="brand" style="font-size:16px;">
+          <i data-lucide="castle"></i>
+          NetherRealms
+        </div>
+        <div class="pill">Dashboard</div>
+        <div class="pill">Demo Mode</div>
       </div>
-      <div id="content"></div>
+
+      <div class="navRight">
+        <div class="pill">User: <span id="currentUser">...</span></div>
+        <button class="btnGhost" id="logoutBtn" type="button">
+          <span style="display:inline-flex;align-items:center;gap:8px;">
+            <i data-lucide="log-out"></i> Logout
+          </span>
+        </button>
+      </div>
     </div>
   </div>
 
-  <script src="/assets/particles.js"></script>
-  <script src="/assets/dashboard.js"></script>
+  <div class="page">
+    <div class="grid">
+      <div class="box">
+        <h2 style="display:flex;align-items:center;gap:10px;">
+          <i data-lucide="layout-dashboard"></i>
+          Overview
+        </h2>
+        <p>
+          This is a frontend-only dashboard with demo authentication (localStorage).
+          Next step: wire Workers + KV auth, then connect /report UI to your Discord bot.
+        </p>
 
-  <!-- Replace Lucide placeholders with SVGs -->
-  <script>lucide.replace();</script>
+        <div class="kpis">
+          <div class="kpi">
+            <div class="k">Deployment</div>
+            <div class="v">LIVE</div>
+          </div>
+          <div class="kpi">
+            <div class="k">Backend</div>
+            <div class="v">OFF</div>
+          </div>
+          <div class="kpi">
+            <div class="k">Auth</div>
+            <div class="v">DEMO</div>
+          </div>
+          <div class="kpi">
+            <div class="k">Status</div>
+            <div class="v">READY</div>
+          </div>
+        </div>
+
+        <hr class="sep"/>
+
+        <div class="mini">
+          <i data-lucide="megaphone"></i>
+          <div>
+            <div class="tt">Client-safe explanation</div>
+            <div class="dd">
+              “Frontend redeployed under final branding repo for stability. UI is live and ready for backend integration.”
+            </div>
+          </div>
+        </div>
+
+        <div style="height:10px;"></div>
+
+        <div class="mini">
+          <i data-lucide="bug"></i>
+          <div>
+            <div class="tt">Cloudflare Pages repo rename issue</div>
+            <div class="dd">
+              Fix is to create a new Pages project linked to the renamed repo (NetherRealms).
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="box">
+        <h2 style="display:flex;align-items:center;gap:10px;">
+          <i data-lucide="flag"></i>
+          Next steps
+        </h2>
+        <p>Pick your next upgrade path:</p>
+
+        <div class="mini">
+          <i data-lucide="server"></i>
+          <div>
+            <div class="tt">Workers backend</div>
+            <div class="dd">Auth endpoints + KV user storage (real sessions).</div>
+          </div>
+        </div>
+
+        <div style="height:10px;"></div>
+
+        <div class="mini">
+          <i data-lucide="message-square-warning"></i>
+          <div>
+            <div class="tt">/report integration</div>
+            <div class="dd">Dashboard sends a report → Worker → Discord bot.</div>
+          </div>
+        </div>
+
+        <div style="height:10px;"></div>
+
+        <div class="mini">
+          <i data-lucide="palette"></i>
+          <div>
+            <div class="tt">Premium polish</div>
+            <div class="dd">Brand palette, motion, sections, and empty-state UI.</div>
+          </div>
+        </div>
+
+        <hr class="sep"/>
+
+        <button class="btn" type="button" id="fakeManageBtn">
+          Manage (demo)
+        </button>
+        <div class="notice">
+          This button is demo-only. Your previous “Manage loops to GitHub App page” was a Pages project link issue after repo rename.
+        </div>
+
+        <div class="success" id="toast"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/auth.js"></script>
+  <script>
+    lucide.createIcons();
+
+    // Protect dashboard
+    const session = NRAuth.requireAuth("/signup/login/");
+    if (session) {
+      document.getElementById("currentUser").textContent = session.username;
+    }
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      NRAuth.logout("/signup/login/");
+    });
+
+    document.getElementById("fakeManageBtn").addEventListener("click", () => {
+      const toast = document.getElementById("toast");
+      toast.textContent = "Demo action triggered ✅ (backend not connected yet)";
+      toast.style.display = "block";
+      setTimeout(() => toast.style.display = "none", 1600);
+    });
+  </script>
 </body>
 </html>
