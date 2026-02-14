@@ -1,39 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>NetherRealms — Create Account</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="/assets/auth.js"></script>
+<script>
+  const form = document.querySelector("form"); // or your signup form selector
+  const err = document.querySelector("#errorText"); // make a <div id="errorText"></div> somewhere
 
-  <!-- Lucide + Styles -->
-  <script src="https://unpkg.com/lucide/dist/lucide.min.js"></script>
-  <link rel="stylesheet" href="/assets/app.css">
-</head>
-<body>
-  <div class="clouds"></div>
-  <canvas id="particles"></canvas>
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-  <div class="wrap">
-    <div class="card">
-      <h2><i data-lucide="user-plus"></i> Create Account</h2>
-      <p class="sub">Fast and clean panel signup</p>
+    const username = document.querySelector("#username").value;
+    const password = document.querySelector("#password").value;
 
-      <input class="input" id="user" placeholder="Username" autocomplete="username">
-      <input class="input" id="pass" type="password" placeholder="Password" autocomplete="new-password">
-      <input class="input" id="pass2" type="password" placeholder="Confirm Password" autocomplete="new-password">
-
-      <button class="btn" onclick="signupSubmit()">
-        <i data-lucide="check-circle"></i> Sign Up
-      </button>
-
-      <p class="sub" style="margin-top:14px; text-align:center">
-        Already have an account? <a href="/signup/login">Login here</a>
-      </p>
-    </div>
-  </div>
-
-  <script src="/assets/particles.js"></script>
-  <script src="/assets/auth.js"></script>
-  <script>lucide.replace();</script>
-</body>
-</html>
+    const res = await NRAuth.signupUser(username, password);
+    if (!res.ok) {
+      if (err) err.textContent = res.error;
+      return;
+    }
+    window.location.href = "/dashboard/";
+  });
+</script>
